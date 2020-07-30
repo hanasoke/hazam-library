@@ -51,52 +51,29 @@
               <div class="row">
                 <div class="col text-center">
                   <img class="logo" src="../img/icons/book.png" alt="">
-                  <h5 class="card-title text-uppercase">Hazam Library Login</h5>
+                  <h5 class="card-title text-uppercase">Hazam Library Register</h5>
                 </div>
               </div>
               <div class="row">
                 <div class="col">
-                  <form>
+                  <form name="formRegister">
                     <div class="form-group">
                       <label for="email">Email</label>
-                      <input type="email" class="form-control" id="email" placeholder="Input Username">
+                      <input type="email" name="email" class="form-control" id="email" placeholder="Input Email">
                     </div>
                     <div class="form-group">
                       <label for="password">Password</label>
                       <input type="password" class="form-control" id="password" placeholder="Input Password">
                     </div>
-                    <button type="button" id="signIn_user" class="btn btn-primary btn-lg btn-block">Sign In</button>
+                    <button type="button" id="signUp" class="btn btn-primary btn-lg btn-block">Sign Up</button>
                   </form>
-                </div>
-              </div>
-              <div class="row my-2">
-                <div class="col text-center">
-                  <div class="or">
-                    <span>
-                      <hr>Or
-                      <hr>
-                    </span>
-                  </div>
-
-                </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <button type="button" id="submit_user" class="btn btn-lg btn-block search"><img
-                      src="../img/social-media/search.png" alt=""> Sign
-                    In
-                    with Google</button>
-                </div>
-              </div>
-              <div class="row mt-4">
-                <div class="col text-center">
-                  <p>Don't Have Account <a href="RegisterUser.html">Sign Up</a></p>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
     </div>
   </section>
 
@@ -113,39 +90,75 @@
 </script>
 <script src="../js/smooth-scroll.js"></script>
 <script src="../js/sweetalert2.all.min.js"></script>
-
+<!-- <script src="../js/script.js"></script> -->
 <script>
   const auth = firebase.auth();
-  const signInuser = document.querySelector('#signIn_user');
-  signInuser.addEventListener('click', function () {
+  const signUp = document.querySelector('#signUp');
+  signUp.addEventListener('click', function () {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const form = document.forms["formRegister"]["email"].value;
+    const at = form.indexOf("@");
+    const dot = form.lastIndexOf(".");
 
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
+    if (email == "" && password != "") {
+      Swal.fire({
+        title: 'Email kosong',
+        text: 'Email wajib diisi',
+        icon: 'info',
+        confirmButtonColor: '#2ecc71'
+      });
+    } else if (email == "" && password == "") {
+      Swal.fire({
+        title: 'Form Kosong',
+        text: 'Form wajib diisi',
+        icon: 'info',
+        confirmButtonColor: '#2ecc71'
+      });
+    } else if (email != "" && password == "") {
+      Swal.fire({
+        title: 'Password kosong',
+        text: 'Password wajib diisi',
+        icon: 'info',
+        confirmButtonColor: '#2ecc71'
+      });
+    } else if (at < 1 || dot < at + 2 || dot + 2 >= form.length) {
+      Swal.fire({
+        title: 'Alamat Email Tidak Valid',
+        text: 'Mohon isi alamat email dengan benar',
+        icon: 'warning',
+        confirmButtonColor: '#2ecc71'
+      });
+    } else {
+      auth.onAuthStateChanged(function (user) {
+        if (user) {
+          Swal.fire({
+            title: 'The Account Has Been Created',
+            icon: 'success',
+            confirmButtonColor: ' #2ecc71 '
+          }).then((result) => {
+            if (result.value) {
+              document.location.href = "../login.php"
+              firebase.auth().signOut();
+            }
+          });
 
-    const promise = auth.signInWithEmailAndPassword(email.value, password.value);
-    promise.catch(e => alert(e.message));
+        } else {
+          firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
 
-    auth.onAuthStateChanged(function (user) {
-      const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-        onOpen: (toast) => {
-          toast.addEventListener('mouseenter', Swal.stopTimer);
-          toast.addEventListener('mouseleave', Swal.resumeTimer);
-          document.location.href = "../user/index.html";
+            this.alert("Error : " + errorMessage);
+
+          });
         }
-      });
 
-      Toast.fire({
-        icon: 'success',
-        title: 'Selamat Datang'
       });
+    }
 
-    });
   });
 </script>
+
 
 </html>

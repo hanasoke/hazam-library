@@ -48,7 +48,7 @@
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
         <div class="sidebar-brand-icon rotate-n-15">
-          <i class="fas fa-laugh-wink"></i>
+          <i class="fas fa-swatchbook"></i>
         </div>
         <div class="sidebar-brand-text mx-3">HAZAM</div>
       </a>
@@ -57,7 +57,7 @@
       <!-- Nav Item - Dashboard -->
       <li class="nav-item">
         <a class="nav-link" href="#">
-          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <i class="fas fa-book-open"></i>
           <span>Dashboard</span></a>
       </li>
       <!-- Divider -->
@@ -67,22 +67,10 @@
         Menu
       </div>
       <!-- Nav Item - Charts -->
-      <li class="nav-item">
-        <a class="nav-link" href="../index.html">
-          <i class="fas fa-fw fa-chart-area"></i>
+      <li class="nav-item active">
+        <a class="nav-link" href="#">
+          <i class="fas fa-book"></i>
           <span>Data Buku</span></a>
-      </li>
-      <!-- Nav Item - Tables -->
-      <li class="nav-item">
-        <a class="nav-link" href="dosen.jsp">
-          <i class="fas fa-fw fa-table"></i>
-          <span>Data Peminjaman Buku</span></a>
-      </li>
-      <!-- Nav Item - Tables -->
-      <li class="nav-item">
-        <a class="nav-link" href="mengajar.jsp">
-          <i class="fas fa-fw fa-table"></i>
-          <span>Data Feedback</span></a>
       </li>
     </ul>
     <!-- End of Sidebar -->
@@ -187,7 +175,7 @@
 
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="login.html">Logout</a>
+          <button class="btn btn-primary" type="button" id="signOut">Logout</button>
         </div>
       </div>
     </div>
@@ -208,6 +196,11 @@
 
 
   <script>
+    const signOut = document.getElementById('signOut');
+    signOut.addEventListener('click', function () {
+      document.location.href = "../../login.php";
+    });
+
     const halaman = document.getElementById('halaman');
     halaman.onkeypress = justNumber;
 
@@ -253,7 +246,7 @@
         }).then((result) => {
           if (result.value) {
             reload_page();
-            document.location.href = "../index.html"
+            document.location.href = "../index.php"
           }
         });
 

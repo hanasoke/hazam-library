@@ -274,9 +274,9 @@
                     <i class="far fa-comment h3"></i>
                   </div>
                   <div class="text-justify" style="text-indent: 30px;">
-                    <p>Hazam Library terbuka untuk menerima saran, kritik, dan masukkan Anda. Kesan dan pesan Anda
+                    <p>Hazam Reference terbuka untuk menerima saran, kritik, dan masukkan Anda. Kesan dan pesan Anda
                       sangat
-                      berarti bagi kemajuan dan perkembangan Hazam Library</p>
+                      berarti bagi kemajuan dan perkembangan Hazam Reference</p>
                   </div>
                 </div>
               </div>
@@ -288,7 +288,7 @@
               <div class="card bg-white">
                 <div class="card-body text-dark">
                   <div class="text-center">
-                    <h2>Hazam Libary</h2>
+                    <h2>Hazam Reference</h2>
                     <ul class="list-group list-group-flush text-left">
                       <li class="list-group-item">Jalan Salemba</li>
                       <li class="list-group-item">Universitas Indonesia</li>
@@ -323,7 +323,7 @@
                 <div class="form-group">
                   <label for="deskripsi">Deskripsi</label>
                   <textarea class="form-control" id="deskripsi" rows="4"
-                    placeholder="Isi Kesan membaca buku dan meminjam buku di Hazam Library..."></textarea>
+                    placeholder="Isi Kesan ketika melihat Referensi buku di Hazam..."></textarea>
                 </div>
                 <button type="button" class="btn btn-block btn-primary" id="save_feedback">Submit</button>
               </form>
@@ -408,8 +408,12 @@
         confirmButtonText: 'Keluar'
       }).then((result) => {
         if (result.value) {
-          auth.signOut();
-          document.location.href = "../login/loginUser.html";
+          firebase.auth().signOut().then(function () {
+            // Sign-out successful.
+            document.location.href = "../login.php";
+          }).catch(function (error) {
+            // An error happened.
+          });
         }
       });
     });
@@ -544,7 +548,7 @@
         updates['/feedback/' + fid] = data;
         firebase.database().ref().update(updates);
         Swal.fire({
-          title: 'Terima kasih Masukannya',
+          title: 'Terima kasih atas Masukannya',
           icon: 'success',
           confirmButtonColor: "#2ecc71"
         }).then((result) => {
