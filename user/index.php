@@ -175,32 +175,14 @@
 
   <!-- Start List Book -->
   <section class="bg-light mt-5" id="list">
-    <div class="container-fluid">
+    <div class="container">
       <div class="row mb-5 text-center">
         <div class="col py-3">
           <h1 class="text-uppercase">List of Books</h1>
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class=" table-responsive-xl">
-            <table class="table" id="tb_books">
-              <thead class="thead-dark">
-                <tr>
-                  <th scope="col" style="width: 15%;">Nama Buku</th>
-                  <th scope="col" style="width: 15%;">Penulis Buku</th>
-                  <th scope="col" style="width: 20%;">Penerbit Buku</th>
-                  <th scope="col" style="width: 10%;">Tanggal Terbit</th>
-                  <th scope="col" style="width: 10%;">Halaman</th>
-                  <th scope="col" style="width: 30%;">Deskripsi</th>
-                </tr>
-              </thead>
-              <tbody>
-
-              </tbody>
-            </table>
-          </div>
-        </div>
+      <div class="row" id="list_books">
+        
       </div>
     </div>
   </section>
@@ -274,9 +256,9 @@
                     <i class="far fa-comment h3"></i>
                   </div>
                   <div class="text-justify" style="text-indent: 30px;">
-                    <p>Hazam Reference terbuka untuk menerima saran, kritik, dan masukkan Anda. Kesan dan pesan Anda
+                    <p>Hazam Libary terbuka untuk menerima saran, kritik, dan masukkan Anda. Kesan dan pesan Anda
                       sangat
-                      berarti bagi kemajuan dan perkembangan Hazam Reference</p>
+                      berarti bagi kemajuan dan perkembangan Hazam Library</p>
                   </div>
                 </div>
               </div>
@@ -288,7 +270,7 @@
               <div class="card bg-white">
                 <div class="card-body text-dark">
                   <div class="text-center">
-                    <h2>Hazam Reference</h2>
+                    <h2>Hazam Library</h2>
                     <ul class="list-group list-group-flush text-left">
                       <li class="list-group-item">Jalan Salemba</li>
                       <li class="list-group-item">Universitas Indonesia</li>
@@ -429,12 +411,10 @@
     });
 
     const scroll = new SmoothScroll('a[href*="#"]');
-
-    const tbBooks = document.getElementById('tb_books');
-    const DatabaseRefBooks = firebase.database().ref('books/');
+    const databaseRefBooks = firebase.database().ref('books/');
     let rowIndexBooks = 1;
 
-    DatabaseRefBooks.once('value', function (snapshot) {
+    databaseRefBooks.once('value', function (snapshot) {
       snapshot.forEach(function (childSnapshot) {
         const childData = childSnapshot.val();
         const x = document.getElementById('judul');
@@ -446,7 +426,7 @@
       });
     });
 
-    DatabaseRefBooks.once('value', function (snapshot) {
+    databaseRefBooks.once('value', function (snapshot) {
       snapshot.forEach(function (childSnapshot) {
         const childData = childSnapshot.val();
         const y = document.getElementById('judul_bf');
@@ -458,25 +438,15 @@
       });
     });
 
-    DatabaseRefBooks.once('value', function (snapshot) {
-      snapshot.forEach(function (childSnapshot) {
-        let childKey = childSnapshot.key;
-        let childData = childSnapshot.val();
+    const tbBuku = document.getElementById('list_books');
 
-        const row = tbBooks.insertRow(rowIndexBooks);
-        const cellNamaBuku = row.insertCell(0);
-        const cellPenulisBuku = row.insertCell(1);
-        const cellPenerbitBuku = row.insertCell(2);
-        const cellTanggalTerbit = row.insertCell(3);
-        const cellHalaman = row.insertCell(4);
-        const cellDeskripsi = row.insertCell(5);
-        cellNamaBuku.appendChild(document.createTextNode(childData.nama_buku));
-        cellPenulisBuku.appendChild(document.createTextNode(childData.penulis_buku));
-        cellPenerbitBuku.appendChild(document.createTextNode(childData.penerbit_buku));
-        cellTanggalTerbit.appendChild(document.createTextNode(childData.tanggal_terbit));
-        cellHalaman.appendChild(document.createTextNode(childData.halaman));
-        cellDeskripsi.appendChild(document.createTextNode(childData.deskripsi));
-        rowIndexBooks = rowIndexBooks + 1;
+    databaseRefBooks.once('value', function (snapshot) {
+      snapshot.forEach(function (childSnapshot) {
+        // let childKey = childSnapshot.key;
+        const childData = childSnapshot.val();
+
+        tbBuku.innerHTML += '<div class="col-md-4 mb-3 col-sm"><div class="card" style="width: 18rem;"><img src="../img/book.jpg" class="card-img-top" alt="Book"><div class="card-body"><h5 class="card-title">' + childData.nama_buku +'</h5><h6 class="card-subtitle mb-2 text-muted">' + childData.penulis_buku+'</h6><p class="card-text">' + childData.deskripsi + '</p></div></div></div>'
+
       });
     });
 
@@ -491,9 +461,37 @@
       const telepon = document.getElementById('telepon_peminjam').value;
       const peminjaman = document.getElementById('peminjaman').value;
       const pengembalian = document.getElementById('pengembalian').value;
-      const uid = firebase.database().ref().child('users').push().key;
+      const lendDate = new Date(peminjaman).getDay();
+      const returnDate = new Date(pengembalian).getDay();
+      const today = new Date().getDay();
+      let uid = firebase.database().ref().child('users').push().key;
 
-      if (nama != "" && judul != "" && email != "" && telepon != "" && peminjaman != "" && pengembalian != "") {
+      
+      if(lendDate != today) {
+        Swal.fire({
+              title: 'Peminjaman Buku',
+              text: 'Harus Tanggal Sekarang',
+              icon: 'warning',
+              confirmButtonColor: ' #2ecc71 '
+          }).then((result) => {
+              if (result.value) {
+                return false;
+              }
+          });
+      } else if(returnDate <= today ) {
+        Swal.fire({
+              title: 'Pengembalian Buku',
+              text: 'minimal besok',
+              icon: 'warning',
+              confirmButtonColor: ' #2ecc71 '
+          }).then((result) => {
+              if (result.value) {
+                return false;
+              }
+          });
+      }
+      
+      else if (nama != "" && judul != "" && email != "" && telepon != "" && peminjaman != "" && pengembalian != "") {
         var updates = {};
         var data = {
           nama: nama,
