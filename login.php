@@ -90,7 +90,7 @@
               </div>
               <div class="row mt-4">
                 <div class="col text-center">
-                  <p>Don't Have Account <a href="../sign_up/register.html">Sign Up</a></p>
+                  <p>Don't Have Account <a href="sign_up/register.html">Sign Up</a></p>
                 </div>
               </div>
             </div>
